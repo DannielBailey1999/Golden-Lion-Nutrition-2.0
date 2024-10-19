@@ -24,11 +24,7 @@ query MyQuery($ingr: String = "") {
 }
 `;
 
-const foodItems = [
-  {label: 'Pizza', cal: 75, brand: 'Dominos'},
-  {label: 'Cake', cal: 75, brand: 'Case'},
-  {label: 'Biscuit', cal: 75, brand: 'Kisko'}
-]
+
 
 
 export default function SearchScreen() {
@@ -46,6 +42,7 @@ export default function SearchScreen() {
 
 
   const items = data?.search?.hints || [];
+
 
 
   return (

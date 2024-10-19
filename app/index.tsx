@@ -1,52 +1,36 @@
-import { Text, View, FlatList, Pressable, StyleSheet} from "react-native";
+import { Text, View, FlatList, Pressable, StyleSheet, ActivityIndicator} from "react-native";
 import { Link } from "expo-router";
 import { HintsEntry } from "@/src/types";
-import FoodListItem from "@/src/components/foodListItem";
+import FoodLogListItem from "@/src/components/foodLogListItem";
+import { gql, useQuery } from "@apollo/client";
+import dayjs from "dayjs";
+const query = gql`
+query myQuery($date: Date!, $user_id: String!) {
+  foodLogsForDate(date: $date, user_id: $user_id) {
+    food_id
+    user_id
+    created_at
+    label
+    kcal
+    id
+  }
+}`;
 
-
-const foodItems: HintsEntry[] = [
-    {
-      __typename: "HintsEntry",
-      food: {
-        __typename: "Food1",
-        label: 'Pizza',
-        brand: 'Dominos',
-        foodId: 'pizza001',
-        nutrients: {
-          __typename: "Nutrients1",
-          ENERC_KCAL: 75
-        }
-      }
-    },
-    {
-      __typename: "HintsEntry",
-      food: {
-        __typename: "Food1",
-        label: 'Cake',
-        brand: 'Case',
-        foodId: 'cake001',
-        nutrients: {
-          __typename: "Nutrients1",
-          ENERC_KCAL: 75
-        }
-      }
-    },
-    {
-      __typename: "HintsEntry",
-      food: {
-        __typename: "Food1",
-        label: 'Biscuit',
-        brand: 'Kisko',
-        foodId: 'biscuit001',
-        nutrients: {
-          __typename: "Nutrients1",
-          ENERC_KCAL: 75
-        }
-      }
-    }
-  ];
 
 export default function HomeScreen(){
+    const user_id = "DANNIEL";
+    const {data, loading, error} = useQuery(query, {variables: {
+        date: dayjs().format('YYYY-MM-DD'),
+        user_id,
+    },
+});
+if (loading){
+    return <ActivityIndicator />
+}
+if (error) {
+    return <Text>Failed to fetch data</Text>
+}
+console.log(data)
     return(
 
         <View style={styles.container}>
@@ -65,11 +49,11 @@ export default function HomeScreen(){
         </View>
             
         <FlatList
-      data={foodItems}
-      renderItem={({item}) => <FoodListItem item={item} />}
-      ListEmptyComponent={() => <Text>Search a food</Text>}
-      contentContainerStyle={{gap: 5}}
-      />
+          data={data.foodLogsForDate}
+          keyExtractor={(item) => item.label}
+          renderItem={({ item }) => <FoodLogListItem item={item} />}
+          contentContainerStyle={{ gap: 5 }}
+        />
         </View> 
     );
 };
