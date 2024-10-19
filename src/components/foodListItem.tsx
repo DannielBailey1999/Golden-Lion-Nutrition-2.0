@@ -23,7 +23,7 @@ const FoodListItem: React.FC<FoodListItemProps> = ({ item }) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'gainsboro', 
+        backgroundColor: '#f6f6f8', 
         padding: 10, 
         borderRadius: 5, 
         flexDirection: 'row', 
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     },
     fooddata: {
         fontWeight: 'bold', 
-        fontSize: 16
+        fontSize: 16,
     }
 })
 
