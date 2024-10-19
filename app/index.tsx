@@ -1,85 +1,92 @@
-import { Text, View, StyleSheet, FlatList, TextInput, Pressable, Button, ActivityIndicator } from "react-native";
+import { Text, View, FlatList, Pressable, StyleSheet} from "react-native";
 import { Link } from "expo-router";
-import AntDesign from '@expo/vector-icons/AntDesign';
-import FoodListItem from "../src/components/foodListItem";
-import { useState } from "react";
-import { gql, useLazyQuery, useQuery } from "@apollo/client";
+import { HintsEntry } from "@/src/types";
+import FoodListItem from "@/src/components/foodListItem";
 
 
-const query = gql`
-query MyQuery($ingr: String = "") {
-  search(ingr: $ingr) {
-    text
-    hints {
-      food {
-        brand
-        label
-        foodId
-        nutrients {
-          ENERC_KCAL
+const foodItems: HintsEntry[] = [
+    {
+      __typename: "HintsEntry",
+      food: {
+        __typename: "Food1",
+        label: 'Pizza',
+        brand: 'Dominos',
+        foodId: 'pizza001',
+        nutrients: {
+          __typename: "Nutrients1",
+          ENERC_KCAL: 75
+        }
+      }
+    },
+    {
+      __typename: "HintsEntry",
+      food: {
+        __typename: "Food1",
+        label: 'Cake',
+        brand: 'Case',
+        foodId: 'cake001',
+        nutrients: {
+          __typename: "Nutrients1",
+          ENERC_KCAL: 75
+        }
+      }
+    },
+    {
+      __typename: "HintsEntry",
+      food: {
+        __typename: "Food1",
+        label: 'Biscuit',
+        brand: 'Kisko',
+        foodId: 'biscuit001',
+        nutrients: {
+          __typename: "Nutrients1",
+          ENERC_KCAL: 75
         }
       }
     }
-  }
-}
-`;
+  ];
 
-const foodItems = [
-  {label: 'Pizza', cal: 75, brand: 'Dominos'},
-  {label: 'Cake', cal: 75, brand: 'Case'},
-  {label: 'Biscuit', cal: 75, brand: 'Kisko'}
-]
+export default function HomeScreen(){
+    return(
 
-
-export default function SearchScreen() {
-  const [search, setSearch] = useState('');
-  const [runSearch, {data, loading, error}]= useLazyQuery(query);
-
-  const performSearch = () => {
-    runSearch({variables: {ingr: search}});
-    setSearch('');
-  };
-
-  if (error){
-    return <Text>Faield to search</Text>
-  }
-
-
-  const items = data?.search?.hints || [];
-
-
-  return (
-    <View style={styles.container}>
-      <TextInput value = {search} 
-      onChangeText={setSearch} 
-      placeholder="search..." 
-      style={styles.input} />
-      {search && <Button title="Search" onPress={performSearch} />}
-      {loading && <ActivityIndicator />}
-      <FlatList
-      data={items}
+        <View style={styles.container}>
+            <View style={styles.headerRow}>
+            <Text style={styles.subtitle}>Calories</Text>
+            <Text>1770 - 360 = 1692</Text>
+            </View>
+    
+            <View style={styles.headerRow}>
+            <Text style={styles.subtitle}>Todays Logged Food</Text>
+            <Pressable>
+            <Link href="/search" asChild>
+              <Text style={{ color: 'blue' }}>Add Food</Text>
+            </Link>
+            </Pressable>
+        </View>
+            
+        <FlatList
+      data={foodItems}
       renderItem={({item}) => <FoodListItem item={item} />}
       ListEmptyComponent={() => <Text>Search a food</Text>}
       contentContainerStyle={{gap: 5}}
-     
       />
-      
-    </View>
-  );
-}
+        </View> 
+    );
+};
 
 const styles = StyleSheet.create({
-  container: {
-      flex: 1,
-      justifyContent: "center",
-      backgroundColor: '#fff',
-      padding: 10, 
-      gap: 5,
-  },
-  input: {
-    backgroundColor: '#f2f2f2',
-    borderRadius: 20,
-    padding: 10,
-  }
-
-});
+    container: {
+        backgroundColor: 'white', 
+        flex: 1, 
+        padding: 10, 
+        gap: 10
+    },
+    headerRow: {
+        flexDirection: 'row', 
+        justifyContent: 'space-between',
+    },
+    subtitle: {
+        fontSize: 16, 
+        fontWeight: 500
+    },
+})
