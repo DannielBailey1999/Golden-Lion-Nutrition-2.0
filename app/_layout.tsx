@@ -1,13 +1,13 @@
-import { Stack } from 'expo-router';
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-  gql,
+import { Stack } from "expo-router";
+import { 
+  ApolloClient, 
+  InMemoryCache, 
+  ApolloProvider, 
+  gql 
 } from '@apollo/client';
 
 const client = new ApolloClient({
-  uri: 'https://zibyungon.us-east-a.ibm.stepzen.net/api/altered-dragon/__graphql',
+  uri: 'https://zibyungon.us-east-a.ibm.stepzen.net/api/fun-poodle/__graphql',
   cache: new InMemoryCache(),
   headers: {
     Authorization:
@@ -15,12 +15,12 @@ const client = new ApolloClient({
   },
 });
 
-const RootLayout = () => {
+export default function RootLayout() {
   return (
     <ApolloProvider client={client}>
       <Stack />
+        
+       
     </ApolloProvider>
   );
-};
-
-export default RootLayout;
+}
