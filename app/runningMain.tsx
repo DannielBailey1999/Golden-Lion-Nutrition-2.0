@@ -2,26 +2,112 @@ import { Text, View, StyleSheet, Pressable, TextInput, Keyboard, TouchableWithou
 import React, { useEffect, useState } from "react";
 import { Avatar } from "react-native-elements";
 import {MetricInput} from '@/src/types';
-import validateInput from "@/src/components/validation";
+
 export default function RunningMain () {
-    const [metricValue, setMetricValue] = useState("0.1");
-    const [metricValueError, setMetricValueError] = useState(false);
+    //states:
+    //1. for metric values
+    const [metricValue, setMetricValue] = useState("1.0");
+    //2. Toggling
+    const [Toggle, setToggle] = useState('Distance');
+    //3. Metric Unit 
+    const [metricUnit, setMetricUnit] = useState('Miles');
+    
     // keyboard visibility 
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
     // helper function for validation
-    
-    // Direct update of the value
+    const validateInput = (input: string, typeOfMetric: string)=> {
+        if (input === '') return true; // Allow empty input
+        
+        var rgx;
+        if(typeOfMetric === 'Distance') {
+            rgx = /^[0-9]{0,2}\.?[0-9]{0,2}?$/;
+        } else {
+            // Time format HH:MM
+            rgx = /^([0-9]{0,2}:?[0-9]{0,2})?$/;
+        }
+        return input.match(rgx);
+    };
+
+    // helper function to make changes to the text input 
     const handleTextChange = (input: string): void => {
-        // for distance
-        // round off the number to one deceimal place
-        if (validateInput(input)) {
-            setMetricValue(input)
+        // Allow empty input
+        if (input === '') {
+            setMetricValue('');
+            return;
+        }
+
+        // Validate and format input
+        if (validateInput(input, Toggle)) {
+            if (Toggle === 'Distance') {
+                // Handle distance input
+                if (input[0] === '.') {
+                    input = '0' + input;
+                }
+                if (input[input.length - 1] === '.') {
+                    input = input + '0';
+                }
+            } else {
+                // Handle time input
+                if (input.length === 1) {
+                    if (!isNaN(Number(input)) && Number(input) <= 9) {
+                        input = '0' + input + ':00';
+                    }
+                }
+                if (input.length === 2 && !input.includes(':')) {
+                    if (!isNaN(Number(input)) && Number(input) <= 23) {
+                        input = input + ':00';
+                    }
+                }
+                // Format time when : is entered
+                if (input.includes(':') && input.length === 3) {
+                    input = input + '00';
+                }
+            }
+            setMetricValue(input);
+        }
+    };
+
+    // Handle input blur (when focus is lost)
+    const handleBlur = () => {
+        setKeyboardVisible(false);
+        
+        // Format empty or incomplete input
+        if (metricValue === '') {
+            if (Toggle === 'Distance') {
+                setMetricValue('0.0');
+            } else {
+                setMetricValue('00:00');
+            }
+        }
+        // Ensure proper format for distance
+        else if (Toggle === 'Distance' && !metricValue.includes('.')) {
+            setMetricValue(metricValue + '.0');
+        }
+        // Ensure proper format for time
+        else if (Toggle === 'Time' && !metricValue.includes(':')) {
+            const numVal = parseInt(metricValue);
+            if (!isNaN(numVal) && numVal < 24) {
+                setMetricValue(metricValue.padStart(2, '0') + ':00');
+            }
         }
     };
 
     const dismissKeyboard = () => {
         Keyboard.dismiss();
+        handleBlur();
+    };
+
+    const toggleHandler = () => {
+        if(Toggle === 'Distance') {
+            setToggle('Time');
+            setMetricUnit('Hours : Minutes');
+            setMetricValue('01:00');
+        } else {
+            setToggle('Distance');
+            setMetricUnit('Miles');
+            setMetricValue('1.0')
+        };
     };
 
     return(
@@ -32,11 +118,11 @@ export default function RunningMain () {
                         <View style={styles.inputWrapper}>
                             <TextInput 
                                 style={{fontSize: 42, fontWeight: 'bold', alignSelf: 'center'}}
-                                keyboardType="decimal-pad"
+                                keyboardType={Toggle === 'Distance' ? "decimal-pad" : "number-pad"}
                                 value={metricValue}
                                 onChangeText={handleTextChange}
                                 onFocus={() => setKeyboardVisible(true)}
-                                onBlur={() => setKeyboardVisible(false)}
+                                onBlur={handleBlur}
                             />
                             {isKeyboardVisible && (
                                 <Pressable 
@@ -48,7 +134,7 @@ export default function RunningMain () {
                             )}
                         </View>
                         <View style={styles.metrics}></View>
-                        <Text style={{alignSelf: 'center', fontWeight: 'bold', fontSize: 16}}>Kilometer</Text>
+                        <Text style={{alignSelf: 'center', fontWeight: 'bold', fontSize: 16}}>{metricUnit}</Text>
                     </Pressable>
                 </View>
                 <View style={{justifyContent: "space-between", alignItems: 'center'}}>
@@ -62,10 +148,10 @@ export default function RunningMain () {
                         containerStyle={{backgroundColor: '#fe9836', marginBottom: 20}}
                     />
                     <Pressable 
-                        onPress={() => console.warn('Toggling')}
+                        onPress={toggleHandler}
                         style={{padding: 12, borderWidth: 2, borderRadius: 28, borderColor: '#ccc', elevation: 20}}
                     >
-                        <Text style={{fontSize: 14, fontWeight: 'bold'}}>Distance</Text>
+                        <Text style={{fontSize: 14, fontWeight: 'bold'}}>{Toggle}</Text>
                     </Pressable>
                 </View>
             </View>
