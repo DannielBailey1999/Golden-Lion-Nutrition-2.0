@@ -7,7 +7,7 @@ export interface HintsEntry {
 
 interface Food1 {
   __typename: "Food1";
-  brand: string | null;
+  brand: string;
   label: string;
   foodId: string;
   nutrients: Nutrients1;
@@ -19,5 +19,17 @@ interface Nutrients1 {
 }
 
 export interface FoodListItemProps {
-  item: HintsEntry;
-};
+  item: FoodItem;
+}
+
+// Updated FoodItem interface
+export interface FoodItem extends HintsEntry {
+  kcal: number;
+  label: string;
+}
+
+// Or maybe more semantic:
+export interface MetricInput {
+  value: string;
+  unit?: string;
+}
