@@ -82,6 +82,11 @@ export default function HomeScreen() {
             <Text style={{ color: 'blue' }}>Run Go For it</Text>
           </Pressable>
         </Link>
+        <Link href="/MapView" asChild>
+      <Pressable>
+            <Text style={{ color: 'blue' }}>View Map</Text>
+          </Pressable>
+        </Link>
       <View style={styles.headerRow}>
         <Text style={styles.subtitle}>Today's Logged Food</Text>
         <Link href="/search" asChild>
