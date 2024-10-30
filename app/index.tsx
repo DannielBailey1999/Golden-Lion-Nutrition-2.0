@@ -95,6 +95,14 @@ export default function HomeScreen() {
           </Pressable>
         </Link>
       </View>
+      <View>
+        <Link href='/Activity' asChild>
+        <Pressable>
+          <Text>Live</Text>
+        </Pressable>
+        </Link>
+        
+      </View>
 
       <FlatList
         data={foodLogItems}
