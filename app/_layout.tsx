@@ -1,10 +1,14 @@
 import { Stack } from "expo-router";
-import { 
-  ApolloClient, 
-  InMemoryCache, 
-  ApolloProvider, 
-  gql 
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  gql
 } from '@apollo/client';
+import HomeScreen from "./(tabs)";
+
 
 const client = new ApolloClient({
   uri: 'https://zibyungon.us-east-a.ibm.stepzen.net/api/fun-poodle/__graphql',
@@ -17,10 +21,19 @@ const client = new ApolloClient({
 
 export default function RootLayout() {
   return (
-    <ApolloProvider client={client}>
-      <Stack />
-        
-       
-    </ApolloProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <ApolloProvider client={client}>
+          <Stack>
+            <Stack.Screen 
+              name="(tabs)" 
+              options={{ 
+                headerShown: false // Add this if you don't want to show the header for tabs
+              }} 
+            />
+          </Stack>
+        </ApolloProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

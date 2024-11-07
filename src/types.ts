@@ -28,8 +28,26 @@ export interface FoodItem extends HintsEntry {
   label: string;
 }
 
-// Or maybe more semantic:
+
 export interface MetricInput {
   value: string;
   unit?: string;
+}
+
+export interface ActivityItem {
+  id: string;
+  day: string;
+  timeOfDay?: string;
+  Kilometer?: string;
+  avgPace: string;
+  time: string;
+}
+
+
+export interface ActivityCardProps {
+  day: string;
+  timeOfDay?: string;
+  Kilometer?: string;
+  avgPace: string;
+  time: string;
 }

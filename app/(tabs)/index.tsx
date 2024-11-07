@@ -73,7 +73,7 @@ export default function HomeScreen() {
     kcal: item.kcal,
     label: item.label
   })) || [];
-
+  console.log(foodLogItems);
   return (
     <View style={styles.container}>
       <CalorieCalculator dailyGoal={DAILY_CALORIE_GOAL} consumedCalories={consumedCalories} />
@@ -96,14 +96,13 @@ export default function HomeScreen() {
         </Link>
       </View>
       <View>
-        <Link href='/Activity' asChild>
+        <Link href= "/Activity"asChild>
         <Pressable>
           <Text>Live</Text>
         </Pressable>
         </Link>
         
       </View>
-
       <FlatList
         data={foodLogItems}
         keyExtractor={(item) => item.food.foodId}
