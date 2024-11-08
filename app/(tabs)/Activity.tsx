@@ -13,6 +13,8 @@ export default function ActivityScreen(): JSX.Element {
                 Kilometer={item.Kilometer}
                 avgPace={item.avgPace}
                 time={item.time}
+                calories={item.calories}
+                totalKmRan={item.totalKmRan}
             />
         );
     };

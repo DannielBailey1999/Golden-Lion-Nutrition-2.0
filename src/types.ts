@@ -41,6 +41,8 @@ export interface ActivityItem {
   Kilometer?: string;
   avgPace: string;
   time: string;
+  calories: number;
+  totalKmRan: string;
 }
 
 
@@ -50,4 +52,6 @@ export interface ActivityCardProps {
   Kilometer?: string;
   avgPace: string;
   time: string;
+  calories: number;
+  totalKmRan: string;
 }
