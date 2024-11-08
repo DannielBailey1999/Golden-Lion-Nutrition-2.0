@@ -4,6 +4,7 @@ import { Avatar } from "react-native-elements";
 import {MetricInput} from '@/src/types';
 import { validateInput } from "@/src/components/validation";
 import MapView, {Circle} from "react-native-maps";
+import { router } from "expo-router";
 
 export default function RunningMain () {
     //states:
@@ -106,7 +107,7 @@ export default function RunningMain () {
                             size="xlarge"
                             rounded
                             title="START"
-                            onPress={() => console.warn("Works!")}
+                            onPress={() => router.push('/runningScreen')} // Navigate to /app/running-session.tsx
                             activeOpacity={0.7}
                             titleStyle={{fontSize: 28, color: '#000', fontWeight: 'bold'}}
                             containerStyle={{backgroundColor: '#fe9836', marginBottom: 20}}

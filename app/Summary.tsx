@@ -6,6 +6,8 @@ import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { TextInput } from 'react-native-gesture-handler';
 import { useState, useRef, useEffect } from 'react';
 import { levels } from '@/src/components/dummyData';
+import ProgressBar from '@/src/components/progressBar';
+
 
 export default function Summary() {
     //props from each run
@@ -117,9 +119,8 @@ export default function Summary() {
                         source={require('../assets/images/arkansas-pb_golden_lions_2015-pres_a.png')}
                         style={styles.progressImage}
                     />
-                    <View style={styles.progressBarContainer}>
-                        <View style={{...styles.progressBar, width: progress, borderColor: imageBackground}}></View>
-                    </View>
+
+                    <ProgressBar prog={progress} bgr={imageBackground} />
                     <Text style={{marginTop: 12}}>
                     {kilometerLeft} to orange level
                     </Text>
@@ -186,12 +187,12 @@ const styles = StyleSheet.create({
         marginBottom: 12
     },
     progressImage: {
-        position: 'absolute',
-        bottom: 190, 
+        // position: 'absolute',
+        bottom:5, 
         right: 0, 
         width: 20, 
         height: 25,
-        left: 320
+        left: 310
     },
     progressBarContainer: {
         borderRadius: 4, 
