@@ -120,7 +120,7 @@ export default function Summary() {
                         style={styles.progressImage}
                     />
 
-                    <ProgressBar prog={progress} bgr={imageBackground} />
+                    <ProgressBar prog={progress} bgr={imageBackground} borderColor={'#fff'} containerBgr={'#ccc'} />
                     <Text style={{marginTop: 12}}>
                     {kilometerLeft} to orange level
                     </Text>
@@ -187,12 +187,12 @@ const styles = StyleSheet.create({
         marginBottom: 12
     },
     progressImage: {
-        // position: 'absolute',
-        bottom:5, 
+        position: 'absolute',
+        bottom:190, 
         right: 0, 
         width: 20, 
         height: 25,
-        left: 310
+        left: 320, 
     },
     progressBarContainer: {
         borderRadius: 4, 

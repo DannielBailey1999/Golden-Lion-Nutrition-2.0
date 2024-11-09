@@ -104,10 +104,18 @@ export default function RunningMain () {
                     </View>
                     <View style={{justifyContent: "space-between", alignItems: 'center'}}>
                         <Avatar
-                            size="xlarge"
+                            size={120}
                             rounded
                             title="START"
-                            onPress={() => router.push('/runningScreen')} // Navigate to /app/running-session.tsx
+                            onPress={() => router.push({
+                                pathname: '/runningScreen',
+                                params: {
+                                    value: metricValue,      // This will be "1.0" for distance
+                                    metric: Toggle,          // This will be "Distance" or "Time"
+                                    type: Toggle,            // Same as metric
+                                    unit: metricUnit        // This will be "Kilometers" or "Miles"
+                                },
+                            })}// Navigate to /app/running-session.tsx
                             activeOpacity={0.7}
                             titleStyle={{fontSize: 28, color: '#000', fontWeight: 'bold'}}
                             containerStyle={{backgroundColor: '#fe9836', marginBottom: 20}}

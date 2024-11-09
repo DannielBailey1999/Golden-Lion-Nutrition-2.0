@@ -1,49 +1,167 @@
-// this is the screen where you start your run
+import React, { useEffect } from "react";
+import { View, Text, StyleSheet, DimensionValue, Alert } from "react-native";
+import { useState } from "react";
+import ProgressBar from "@/src/components/progressBar";
+import { Avatar } from "react-native-elements";
+import { router, useNavigation, useLocalSearchParams } from "expo-router";
 
-import React from "react";
-import { View, Text } from "react-native";
+type Params = {
+    value: string;
+    metric: string;    // Will be "Distance" or "Time"
+    type: string;      // Will be "Distance" or "Time"
+    unit: string;      // Will be "Kilometers" or "Miles"
+}
 
 const RunningScreen = () => {
+   const [progress, setProgress] = useState<DimensionValue>('0%');
+   const navigation = useNavigation();
+   const params = useLocalSearchParams<Params>();
+
+   const [metric, setMetric] = useState('Kilometers')
+   const [metricValue, setMetricValue] = useState('0.0')
+   const [pace, setPace] = useState("-'--\"")
+   const [calories, setCalories] = useState("--")
+   
+   const [targetValue, setTargetValue] = useState('0')
+
+
+
+
+   console.log('Params:', {
+       metric: params.metric,   // Should show "Distance" or "Time"
+       value: params.value      // Should show the actual value
+   });
+
+   useEffect(() => {
+    // Set initial values based on params
+    if(params.metric === 'Time') {
+        setMetric('Hours : Minutes')
+        setMetricValue('00:00')
+    } else {
+        setMetric('Kilometers')
+        setMetricValue('0.0')  // Default to 1.0 for distance
+    }
+    setTargetValue(params.value)
+   }, [])
+
+    useEffect(() => {
+     // Start increment logic for time or distance
+     if(params.type === 'Time') {
+         // Time increment logic (if needed)
+     } else {
+         // Distance increment logic (if needed)
+     }
+    }, [params.type])
+ 
+    // Format the display value based on type
+    const getFormattedValue = () => {
+     if(params.type === 'Time') {
+         return metricValue; // Already in HH:MM format
+     } else {
+         // Format distance to 2 decimal places
+         return Number(metricValue).toFixed(2);
+     }
+    }
+ 
+    useEffect(()=>navigation.addListener('beforeRemove', event=>{
+        event.preventDefault();
+        Alert.alert('Discarding Run','Are you sure you want to discard this run?', [
+            {text: 'No', style: "cancel", onPress:()=>{}},
+            {text: 'Yes', style:'destructive',onPress:()=>navigation.dispatch(event.data.action)}
+        ])
+    }), [navigation]);
+ 
     return (
-        <View
-        style={{backgroundColor: '#fe9836',
-            flex: 1, 
-            paddingVertical: 24, 
-            paddingHorizontal: 32, 
-        }}>
-            <View
-            style={{
-                justifyContent: 'space-between',
-                 alignItems: 'center',
-                 flexDirection: 'row'
-                 }}>
+        <View style={styles.mainConatiner}>
+            <View style={styles.paceCalContainer}>
                 {/*Pace */}
-                <View style={{
-                    justifyContent: 'center',
-                     alignItems: 'center',
-                }}>
-                    <Text style={{fontSize: 32}}>-'--"</Text>
-                    <Text style={{fontSize: 20, fontWeight: 'bold', color: '#a96528'}}>Pace</Text>
+                <View style={styles.metricContainer}>
+                    <Text style={styles.metricValue}>{pace}</Text>
+                    <Text style={styles.metric}>Pace</Text>
                 </View>
                 {/*Calories */}
-                <View style={{
-                    justifyContent: 'center',
-                     alignItems: 'center', 
-                }}>
-                    <Text style={{fontSize: 32}}>-'--"</Text>
-                    <Text style={{fontSize: 20, fontWeight: 'bold', color: '#a96528'}}>Calories</Text>
+                <View style={styles.metricContainer}>
+                    <Text style={styles.metricValue}>{calories}</Text>
+                    <Text style={styles.metric}>Calories</Text>
                 </View>
             </View>
             {/*Distance/ Time Metric set up */}
-            <View
-            style={{marginTop: 60, alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={{fontSize: 120, fontStyle: 'italic', fontWeight: 'bold'}}>0.00</Text>
-                <Text style={{fontSize: 20, fontWeight: 'bold', color: '#a96528'}}>kilometers</Text>
+            <View style={{marginTop: 60, alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={styles.mainMetric}>{metricValue}</Text>
+                <Text style={styles.metric}>
+                    {metric}
+                </Text>
             </View>
             {/*Progress Bar */}
+            <View style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 60,
+            }}>
+                <ProgressBar 
+                    prog={progress} 
+                    innerBorderColor={'black'} 
+                    containerborderColor={'#fff'} 
+                    containerBgr={'#ccc'} 
+                />
+            </View>
             {/*Pause Button */}
+            <View style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 60
+            }}>
+                <Avatar
+                    size={120}
+                    rounded
+                    icon={{name: 'pause'}}
+                    onPress={() => router.push({
+                        pathname: '/runPause',
+                        params: {
+                            value: metricValue,
+                            metric: metric,
+                            type: params.type,
+                            unit: params.unit
+                        }
+                    })}
+                    activeOpacity={0.7}
+                    titleStyle={{fontSize: 80, color: 'white', fontWeight: 'bold'}}
+                    containerStyle={{backgroundColor: '#000', marginBottom: 20}}
+                />
+            </View>
         </View>
     );
-};
+ };
+const styles = StyleSheet.create({
+   mainConatiner: {
+       backgroundColor: '#fe9836',
+       flex: 1, 
+       paddingVertical: 24, 
+       paddingHorizontal: 32, 
+   },
+   paceCalContainer: {
+       justifyContent: 'space-between',
+       alignItems: 'center',
+       flexDirection: 'row'
+   },
+   metricContainer : {
+       justifyContent: 'center',
+       alignItems: 'center',
+   },
+   metricValue: {
+       fontSize: 32
+   },
+   metric: {
+       fontSize: 20, 
+       fontWeight: 'bold', 
+       color: '#a96528'
+   },
+   mainMetric: {
+       fontSize: 100, 
+       fontStyle: 'italic', 
+       fontWeight: 'bold'
+   },
+});
+
 
 export default RunningScreen;

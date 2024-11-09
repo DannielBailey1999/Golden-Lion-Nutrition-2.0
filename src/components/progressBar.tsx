@@ -5,16 +5,18 @@ import { useState } from "react";
 
 type ProgressBarProps = {
     prog: DimensionValue;
-    bgr: string;
+    innerBorderColor: string;
+    containerborderColor: string;
+    containerBgr: string;
 };
 
 
-const ProgressBar = ({ prog, bgr }: ProgressBarProps) => {
+const ProgressBar = ({ prog, innerBorderColor, containerborderColor, containerBgr }: ProgressBarProps) => {
     const [progress, setProgress] = useState<DimensionValue>('80%');
     const [imageBackground, setImageBackground] = useState('blue');
     return (
-        <View style={styles.progressBarContainer}>
-            <View style={{...styles.progressBar, width: prog, borderColor: bgr}}></View>
+        <View style={{...styles.progressBarContainer, borderColor: containerborderColor, backgroundColor: containerBgr}}>
+            <View style={{...styles.progressBar, width: prog, borderColor: innerBorderColor}}></View>
         </View>
     );
 };
