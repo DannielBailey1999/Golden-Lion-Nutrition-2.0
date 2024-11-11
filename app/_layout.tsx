@@ -1,7 +1,10 @@
 import { Stack } from "expo-router";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { View } from 'react-native';
+import { View, Pressable } from 'react-native';
+import { RootSiblingParent } from 'react-native-root-siblings';
+import { Entypo } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import {
   ApolloClient,
   InMemoryCache,
@@ -9,6 +12,8 @@ import {
   gql
 } from '@apollo/client';
 import HomeScreen from "./(tabs)";
+import { RunProvider } from '@/src/context/runContext';
+
 
 
 const client = new ApolloClient({
@@ -25,20 +30,72 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <ApolloProvider client={client}>
-          <View style={{ flex: 1, backgroundColor: '#fff' }}>
-            <SafeAreaView style={{ flex: 1 }}>
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                  contentStyle: {
-                    paddingHorizontal: 12  // Global horizontal padding for all screens
-                  }
-                }}
-              >
-                <Stack.Screen name="(tabs)" />
-              </Stack>
-            </SafeAreaView>
-          </View>
+          <RunProvider>
+            <View style={{ flex: 1, backgroundColor: '#fff' }}>
+              <SafeAreaView style={{ flex: 1 }}>
+                <RootSiblingParent>
+                  <Stack
+                    screenOptions={{
+                      headerShown: true,
+                      headerTitle: "",
+                      headerBackTitle: "",
+                      headerStyle: {
+                        backgroundColor: '#fff',
+                      },
+                      contentStyle: {
+                        paddingHorizontal: 12,
+                      },
+                    }}
+                  >
+                    <Stack.Screen 
+                      name="(tabs)" 
+                      options={{
+                        headerShown: false
+                      }}
+                    />
+                    <Stack.Screen 
+                      name="Summary" 
+                      options={{
+                        headerShown: true,
+                        headerTitle: "",
+                        headerBackTitle: "",
+                        headerLeft: () => (
+                          <Pressable 
+                            onPress={() => router.replace('/runningMain')}
+                            style={({ pressed }) => ({
+                              opacity: pressed ? 0.5 : 1,
+                              paddingHorizontal: 10
+                            })}
+                          >
+                            <Entypo name="chevron-left" size={24} color="black" />
+                          </Pressable>
+                        ),
+                      }}
+                    />
+                    <Stack.Screen 
+                      name="runPause" 
+                      options={{
+                        headerShown: true,
+                        headerTitle: "",
+                        headerBackTitle: "",
+                        headerLeft: () => (
+                          <Pressable 
+                            onPress={() => router.replace('/(tabs)')}
+                            style={({ pressed }) => ({
+                              opacity: pressed ? 0.5 : 1,
+                              paddingHorizontal: 10
+                            })}
+                          >
+                            <Entypo name="chevron-left" size={24} color="black" />
+                          </Pressable>
+                        ),
+                      }}
+                    />
+                  </Stack>
+                </RootSiblingParent>
+              </SafeAreaView>
+            </View>
+          </RunProvider>
         </ApolloProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

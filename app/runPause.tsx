@@ -1,10 +1,11 @@
-import React from "react";
-import { View, Text, StyleSheet, DimensionValue, TouchableOpacity } from "react-native";
+import React, { useEffect } from "react";
+import { View, Text, StyleSheet, DimensionValue, TouchableOpacity, BackHandler } from "react-native";
 import MapView, { Circle } from "react-native-maps";
 import ProgressBar from "@/src/components/progressBar";
 import { Avatar } from "react-native-elements";
-import { router, useLocalSearchParams, useRouter } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import Toast from 'react-native-root-toast';
+import { useRunState } from "@/src/context/runContext";
 
 type SearchParams = {
   value?: string;
@@ -21,17 +22,38 @@ type SearchParams = {
 
 export default function PauseScreen() {
   const params = useLocalSearchParams<SearchParams>();
+  const { runState } = useRunState();
 
-  // Convert string values to numbers where needed
-  const kilometers = params.kilometers ? parseFloat(params.kilometers) : 0;
-  const targetValue = params.targetValue ? parseFloat(params.targetValue) : 0;
-  const time = params.time ?? "00:00";
-  const progressPercentage = params.progressPercentage ?? "0%";
+  // Handle hardware back button
+  useEffect(() => {
+    const backAction = () => {
+      router.replace('/(tabs)');
+      return true;
+    };
 
-   const router = useRouter();
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   const handleStopPress = () => {
-    // Show toast message
+    // Get current date and time
+    const now = new Date();
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const currentDay = days[now.getDay()];
+    
+    // Determine time of day
+    const hour = now.getHours();
+    let timeOfDay = "Morning";
+    if (hour >= 12 && hour < 17) timeOfDay = "Afternoon";
+    if (hour >= 17) timeOfDay = "Evening";
+
+    // Format calories to ensure it's a valid number
+    const formattedCalories = runState.calories === '--' ? '0' : runState.calories;
+
     Toast.show("Run stopped", {
       duration: Toast.durations.LONG,
       position: Toast.positions.BOTTOM,
@@ -41,26 +63,29 @@ export default function PauseScreen() {
       delay: 0,
     });
 
-    // Navigate to the 'runningMain' route and reset the stack
-     // Navigate to the 'runningMain' route and reset the stack
-     // Navigate to the 'Summary' screen with params
-     router.navigate({
-        pathname: "/Summary",
-        params: {
-          day: "aday",
-          timeOfDay: "ajaja",
-          Kilometer: "haha",
-          avgPace: "12",
-          time: "12:34",
-          calories: "456",
-          totalKmRan: "hahahha",
-        },
-      });
-    };
+    router.push({
+      pathname: "/Summary",
+      params: {
+        day: currentDay,
+        timeOfDay: timeOfDay,
+        Kilometer: runState.kilometersValue || "0",
+        avgPace: runState.pace || "--",
+        time: runState.timeValue || "00:00",
+        calories: formattedCalories,  // Use formatted calories
+        totalKmRan: runState.totalKmRan || "0",
+      },
+    });
+  };
+
+  const getProgressValue = (progress: string): DimensionValue => {
+    if (progress.endsWith('%')) {
+      return progress as `${number}%`;
+    }
+    return 0;
+  };
 
   return (
     <View style={styles.mainContainer}>
-      {/*Map View */}
       <View style={styles.mapContainer} pointerEvents="none">
         <MapView
           style={styles.map}
@@ -83,45 +108,44 @@ export default function PauseScreen() {
         </MapView>
       </View>
 
-      {/*Metrics */}
       <View style={styles.metricMainContainer}>
-        {/*Kilometers and Calories*/}
         <View style={styles.metricInnerContainer}>
           <View style={{ alignItems: "center" }}>
-            <Text style={styles.metricValue}>{kilometers.toFixed(2)}</Text>
+            <Text style={styles.metricValue}>
+              {runState.kilometersValue || "0.00"}
+            </Text>
             <Text style={styles.metric}>Kilometers</Text>
           </View>
           <View style={{ alignItems: "center", marginTop: 16 }}>
-            <Text style={styles.metricValue}>{params.calories ?? "--"}</Text>
+            <Text style={styles.metricValue}>
+              {runState.calories === '--' ? '0' : runState.calories}
+            </Text>
             <Text style={styles.metric}>Calories</Text>
           </View>
         </View>
-        {/*Time and Pace */}
         <View style={styles.metricInnerContainer}>
           <View style={{ alignItems: "center" }}>
-            <Text style={styles.metricValue}>{time}</Text>
+            <Text style={styles.metricValue}>{runState.timeValue || "00:00"}</Text>
             <Text style={styles.metric}>Time</Text>
           </View>
           <View style={{ alignItems: "center", marginTop: 16 }}>
-            <Text style={styles.metricValue}>{params.pace ?? "--"}</Text>
+            <Text style={styles.metricValue}>{runState.pace || "--"}</Text>
             <Text style={styles.metric}>Pace</Text>
           </View>
         </View>
       </View>
 
-      {/*Progress Bar*/}
       <View style={styles.progressBarContainer}>
         <ProgressBar
-          prog={progressPercentage as DimensionValue}
+          prog={getProgressValue(runState.progress)}
           innerBorderColor={"black"}
           containerborderColor={"#ccc"}
           containerBgr={"#fff"}
         />
       </View>
 
-      {/*Stop and Resume buttons*/}
       <View style={styles.buttonsContainer}>
-      <TouchableOpacity onPress={handleStopPress}>
+        <TouchableOpacity onPress={handleStopPress}>
           <Avatar
             size={120}
             rounded
@@ -134,14 +158,13 @@ export default function PauseScreen() {
         <Avatar
           size={120}
           rounded
-          icon={{ name: "play" }} // Changed from 'resume' to 'play'
+          icon={{ name: "play" }}
           activeOpacity={0.7}
           titleStyle={{ fontSize: 80, color: "white", fontWeight: "bold" }}
           containerStyle={{ backgroundColor: "#fe9836", marginLeft: 60 }}
           onPress={() => {
-            router.back()
+            router.back();
           }}
-
         />
       </View>
     </View>
