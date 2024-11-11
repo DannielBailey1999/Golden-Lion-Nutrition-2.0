@@ -12,7 +12,7 @@ type ProgressBarProps = {
 
 
 const ProgressBar = ({ prog, innerBorderColor, containerborderColor, containerBgr }: ProgressBarProps) => {
-    const [progress, setProgress] = useState<DimensionValue>('80%');
+    const [progress, setProgress] = useState<DimensionValue>('20%');
     const [imageBackground, setImageBackground] = useState('blue');
     return (
         <View style={{...styles.progressBarContainer, borderColor: containerborderColor, backgroundColor: containerBgr}}>

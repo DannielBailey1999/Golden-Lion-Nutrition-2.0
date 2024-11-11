@@ -120,7 +120,7 @@ export default function Summary() {
                         style={styles.progressImage}
                     />
 
-                    <ProgressBar prog={progress} bgr={imageBackground} borderColor={'#fff'} containerBgr={'#ccc'} />
+                    <ProgressBar prog={progress} innerBorderColor={imageBackground} containerborderColor={'#fff'} containerBgr={'#ccc'} />
                     <Text style={{marginTop: 12}}>
                     {kilometerLeft} to orange level
                     </Text>

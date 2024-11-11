@@ -1,6 +1,7 @@
 import { Stack } from "expo-router";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { View } from 'react-native';
 import {
   ApolloClient,
   InMemoryCache,
@@ -24,14 +25,20 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <ApolloProvider client={client}>
-          <Stack>
-            <Stack.Screen 
-              name="(tabs)" 
-              options={{ 
-                headerShown: false // Add this if you don't want to show the header for tabs
-              }} 
-            />
-          </Stack>
+          <View style={{ flex: 1, backgroundColor: '#fff' }}>
+            <SafeAreaView style={{ flex: 1 }}>
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: {
+                    paddingHorizontal: 12  // Global horizontal padding for all screens
+                  }
+                }}
+              >
+                <Stack.Screen name="(tabs)" />
+              </Stack>
+            </SafeAreaView>
+          </View>
         </ApolloProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
