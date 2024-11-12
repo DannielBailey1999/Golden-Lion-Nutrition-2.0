@@ -54,11 +54,21 @@ export default function RootLayout() {
                       }}
                     />
                     <Stack.Screen 
+                      name="runningScreen"
+                      options={{
+                        headerShown: true,
+                        headerBackVisible: false,
+                        gestureEnabled: false,
+                        headerLeft: () => null,
+                      }}
+                    />
+                    <Stack.Screen 
                       name="Summary" 
                       options={{
                         headerShown: true,
                         headerTitle: "",
                         headerBackTitle: "",
+                        gestureEnabled: false,
                         headerLeft: () => (
                           <Pressable 
                             onPress={() => router.replace('/runningMain')}
@@ -73,11 +83,12 @@ export default function RootLayout() {
                       }}
                     />
                     <Stack.Screen 
-                      name="runPause" 
+                      name="runPause"
                       options={{
                         headerShown: true,
                         headerTitle: "",
                         headerBackTitle: "",
+                        gestureEnabled: false,
                         headerLeft: () => (
                           <Pressable 
                             onPress={() => router.replace('/(tabs)')}

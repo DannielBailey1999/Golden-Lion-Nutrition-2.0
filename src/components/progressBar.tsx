@@ -1,47 +1,41 @@
-import React from "react";
-import { View, Text, StyleSheet, DimensionValue } from "react-native";
-import { useState } from "react";
+import React from 'react';
+import { View, DimensionValue } from 'react-native';
 
-
-type ProgressBarProps = {
+interface ProgressBarProps {
     prog: DimensionValue;
     innerBorderColor: string;
     containerborderColor: string;
     containerBgr: string;
-};
+}
 
-
-const ProgressBar = ({ prog, innerBorderColor, containerborderColor, containerBgr }: ProgressBarProps) => {
-    const [progress, setProgress] = useState<DimensionValue>('20%');
-    const [imageBackground, setImageBackground] = useState('blue');
+const ProgressBar: React.FC<ProgressBarProps> = ({
+    prog,
+    innerBorderColor,
+    containerborderColor,
+    containerBgr
+}) => {
     return (
-        <View style={{...styles.progressBarContainer, borderColor: containerborderColor, backgroundColor: containerBgr}}>
-            <View style={{...styles.progressBar, width: prog, borderColor: innerBorderColor}}></View>
+        <View 
+            style={{
+                borderRadius: 4,
+                borderColor: containerborderColor,
+                backgroundColor: containerBgr,
+                width: '80%',
+                borderWidth: 2,
+            }}
+        >
+            <View
+                style={{
+                    width: prog,
+                    borderRadius: 4,
+                    borderWidth: 2,
+                    borderColor: innerBorderColor,
+                    backgroundColor: innerBorderColor,
+                }}
+            />
         </View>
     );
 };
 
-const styles = StyleSheet.create({
-    progressImage: {
-        position: 'absolute',
-        bottom: 190, 
-        right: 0, 
-        width: 20, 
-        height: 25,
-        left: 320
-    },
-    progressBarContainer: {
-        borderRadius: 4, 
-        borderColor: '#fff',
-        backgroundColor: '#ccc',
-        width: '80%',
-        borderWidth: 2, 
-    },
-    progressBar: {
-        borderRadius: 4, 
-        backgroundColor: '#ccc',
-        borderWidth: 2, 
-    }
-});
 
 export default ProgressBar;

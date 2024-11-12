@@ -101,6 +101,11 @@ export default function HomeScreen() {
           <Text>Live</Text>
         </Pressable>
         </Link>
+        <Link href="/MapView" asChild>
+          <Pressable>
+            <Text style={{ color: 'blue' }}>Add Food</Text>
+          </Pressable>
+        </Link>
         
       </View>
       <FlatList

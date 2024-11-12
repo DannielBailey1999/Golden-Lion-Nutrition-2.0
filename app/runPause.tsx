@@ -158,7 +158,12 @@ export default function PauseScreen() {
         <Avatar
           size={120}
           rounded
-          icon={{ name: "play" }}
+          icon={{ 
+            name: "play",
+            type: "ionicon",
+            size: 50,
+            color: "white"
+        }}
           activeOpacity={0.7}
           titleStyle={{ fontSize: 80, color: "white", fontWeight: "bold" }}
           containerStyle={{ backgroundColor: "#fe9836", marginLeft: 60 }}
